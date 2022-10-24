@@ -53,7 +53,7 @@ namespace UniversityApiBackend.Services
 
         public List<Course> FindCourseslWithoutStudents()
         {
-            return _context.Courses.Where(course => course.Students.Any()).ToList();
+            return _context.Courses.Where(course => !course.Students.Any()).ToList();
         }
 
 
