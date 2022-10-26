@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityApiBackend.DataAccess;
 using UniversityApiBackend.Models.DataModels;
+using UniversityApiBackend.Services.CoursesService;
 
 namespace UniversityApiBackend.Controllers
 {
@@ -15,10 +16,13 @@ namespace UniversityApiBackend.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly UniversityDBContext _context;
+        private readonly ICoursesService coursesService;
 
-        public CoursesController(UniversityDBContext context)
+        public CoursesController(UniversityDBContext context, ICoursesService coursesService)
         {
             _context = context;
+            this.coursesService = coursesService;
+
         }
 
         // GET: api/Courses
@@ -100,7 +104,30 @@ namespace UniversityApiBackend.Controllers
             return NoContent();
         }
 
-        private bool CourseExists(int id)
+        [HttpGet("category/{category}")]
+        public IEnumerable<Course> GetCoursesByCategory(Category category){
+
+            return  coursesService.GetCoursesByCategory(category);
+        }
+
+        [HttpGet("withoutchapters")]
+        public IEnumerable<Course>  GetCoursesWithoutChapters()
+        {
+
+            return coursesService.GetCoursesWithoutChapters();
+        }
+
+        [HttpGet("student")]
+        public IEnumerable<Course> GetCoursesOfAnStudent(Student student)
+        {
+
+            return coursesService.GetCoursesOfAnStudent(student);
+        }
+        
+
+
+
+    private bool CourseExists(int id)
         {
             return _context.Courses.Any(e => e.Id == id);
         }

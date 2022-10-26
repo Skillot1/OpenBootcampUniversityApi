@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityApiBackend.DataAccess;
 using UniversityApiBackend.Models.DataModels;
+using UniversityApiBackend.Services.StudentServices;
 
 namespace UniversityApiBackend.Controllers
 {
@@ -15,10 +16,14 @@ namespace UniversityApiBackend.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly UniversityDBContext _context;
+       
+        //Service
+        private readonly IStudentsService studentsService;
 
-        public StudentsController(UniversityDBContext context)
+        public StudentsController(UniversityDBContext context, IStudentsService studentsService)
         {
             _context = context;
+            this.studentsService = studentsService;
         }
 
         // GET: api/Students
@@ -98,6 +103,18 @@ namespace UniversityApiBackend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("withoutcourses")]
+       public IEnumerable<Student> GetStudentsWithoutCourses()
+        {
+            return studentsService.GetStudentsWithCourses();
+        }
+
+        [HttpGet("course/{courseId}")]
+        public IEnumerable<Student> GetStudentsOfCourse(int courseId)
+        {
+            return studentsService.GetStudentsOfCourse(courseId);
         }
 
         private bool StudentExists(int id)
