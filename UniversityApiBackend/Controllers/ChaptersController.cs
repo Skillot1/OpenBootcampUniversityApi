@@ -16,8 +16,8 @@ namespace UniversityApiBackend.Controllers
     public class ChaptersController : ControllerBase
     {
         private readonly UniversityDBContext _context;
-        private readonly IChapterService chapterService;
-        public ChaptersController(UniversityDBContext context, IChapterService chapterService)
+        private readonly IChaptersService chapterService;
+        public ChaptersController(UniversityDBContext context, IChaptersService chapterService)
         {
             _context = context;
             this.chapterService = chapterService;

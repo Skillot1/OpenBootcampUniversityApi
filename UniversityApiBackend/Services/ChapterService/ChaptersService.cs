@@ -3,11 +3,11 @@ using UniversityApiBackend.Models.DataModels;
 
 namespace UniversityApiBackend.Services.ChapterService
 {
-    public class ChapterService : IChapterService
+    public class ChaptersService : IChaptersService
     {
         private readonly UniversityDBContext _context;
 
-        public ChapterService(UniversityDBContext _context)
+        public ChaptersService(UniversityDBContext _context)
         {
             this._context = _context;
         }
