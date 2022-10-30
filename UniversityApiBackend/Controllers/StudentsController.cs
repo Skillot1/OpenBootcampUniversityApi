@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +30,7 @@ namespace UniversityApiBackend.Controllers
 
         // GET: api/Students
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator, User")]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
             return await _context.Students.ToListAsync();
@@ -50,6 +53,7 @@ namespace UniversityApiBackend.Controllers
         // PUT: api/Students/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> PutStudent(int id, Student student)
         {
             if (id != student.Id)
@@ -81,6 +85,7 @@ namespace UniversityApiBackend.Controllers
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {
             _context.Students.Add(student);
@@ -91,6 +96,7 @@ namespace UniversityApiBackend.Controllers
 
         // DELETE: api/Students/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
             var student = await _context.Students.FindAsync(id);

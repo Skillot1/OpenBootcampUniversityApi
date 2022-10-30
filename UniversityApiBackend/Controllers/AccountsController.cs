@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UniversityApiBackend.DataAccess;
 using UniversityApiBackend.Helpers;
 using UniversityApiBackend.Models.DataModels;
 using UniversityApiBackend.Models.JWTModels;
@@ -14,43 +15,24 @@ namespace UniversityApiBackend.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly JwtSettings jwtSettings;
+        private readonly UniversityDBContext context;
 
-        public AccountsController(JwtSettings jwtSettings)
+        public AccountsController(JwtSettings jwtSettings, UniversityDBContext context)
         {
             this.jwtSettings = jwtSettings;
+            this.context = context;
         }
 
-        //LOGIN momentaneamente será sin EF
-
-        private IEnumerable<User> Logins = new List<User>()
-        {
-            new User()
-            {
-                Id = 1,
-                Email="prueba@gmail.com",
-                Name ="Admin",
-                Password= "Admin"
-
-            },
-             new User()
-            {
-                Id = 2,
-                Email="prueba2@gmail.com",
-                Name ="User1",
-                Password= "user1"
-
-            }
-
-        };
-
+   
         //Generacion del token
         [HttpPost]
-        public IActionResult GetToken(UserLogins userLogin)
+        public  IActionResult GetToken(UserLogins userLogin)
         {
             try
             {
+
                 //Comprobamos validez del login
-                bool valid = Logins.Any(user => user.Name == userLogin.UserName && userLogin.Password == userLogin.Password);
+                bool valid = context.Users.Any(user => user.Name == userLogin.UserName && userLogin.Password == userLogin.Password);
 
                 if (!valid)
                 {
@@ -58,7 +40,7 @@ namespace UniversityApiBackend.Controllers
                 }
 
                 //Seleccionamos al usuario
-                var user = Logins.FirstOrDefault(user => user.Name.Equals(userLogin.UserName, StringComparison.OrdinalIgnoreCase));
+                var user = context.Users.FirstOrDefault(user => user.Name.Equals(userLogin.UserName));
 
                 //Generamos el token
                 var Token = JwtHelpers.GenTokenKey
@@ -87,7 +69,7 @@ namespace UniversityApiBackend.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public IActionResult GetUserList(){
-            return Ok(Logins);
+            return Ok(context.Users);
         }
 
 

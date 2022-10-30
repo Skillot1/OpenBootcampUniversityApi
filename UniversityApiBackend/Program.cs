@@ -1,5 +1,7 @@
 //1. Usings to work with EntityFramework
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using UniversityApiBackend;
 using UniversityApiBackend.DataAccess;
 using UniversityApiBackend.Services;
 using UniversityApiBackend.Services.ChapterService;
@@ -18,7 +20,7 @@ builder.Services.AddDbContext<UniversityDBContext>(options => options.UseSqlServ
 
 //7. Add Service of JWT Autorization
 
-//builder.Services.AddJwtTokenServices(builder.Configuration);
+builder.Services.AddJwtTokenServices(builder.Configuration);
 
 // Add services to the container.
 
@@ -29,11 +31,48 @@ builder.Services.AddScoped<IStudentsService, StudentsService>();
 builder.Services.AddScoped<ICoursesService, CoursesService>();
 builder.Services.AddScoped<IChaptersService, ChaptersService>();
 
+//8. Add Autorizathion
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UsersOnlyPolicy", pocily => pocily.RequireClaim("UsersOlny", "Users1"));
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-//8. Configurar Swagger para que tenga en cuenta el JWT como autorización.
-builder.Services.AddSwaggerGen();
+//9. Configurar Swagger para que tenga en cuenta el JWT como autorización.
+builder.Services.AddSwaggerGen(options =>
+{
+    //Definimos la seguridad de la autorizacion
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization Header using Bearer Scheme"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+               new OpenApiSecurityScheme
+    {
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id= "Bearer"
+        }
+    },
+    new string[]
+    {
+
+    }
+        }
+
+    });
+});
 
 //5. Habilitar el CORS
 

@@ -60,7 +60,7 @@ namespace UniversityApiBackend.Helpers
 
                 //Tiempo de expiracion del token en 15 minutos
 
-                DateTime expireTime = DateTime.UtcNow.AddMinutes(15);
+                DateTime expireTime = DateTime.UtcNow.AddMinutes(115);
 
                 //Validez del token
 
