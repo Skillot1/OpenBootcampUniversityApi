@@ -17,16 +17,38 @@ namespace UniversityApiBackend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UniversityDBContext _context;
+        private readonly ILogger<UsersController> _logger;
 
-        public UsersController(UniversityDBContext context)
+        public UsersController(UniversityDBContext context , ILogger<UsersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
+
+        //EJEMPLO DE LLAMADA EN JS UNA VEZ OBTENIDO EL TOKEN
+
+/*
+        const options = {
+    method: 'GET',
+  headers: {
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbkBleGFtcGxlLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYzNmMjFlOTYtOWE0MC00ZjFhLThhZDUtMGI0MTkyNTkxNzU2IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoib2N0LiBsdW4uIDMxIDIwMjIgMTE6NDQ6NTYgIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsIm5iZiI6MTY2NzIxNTc5NiwiZXhwIjoxNjY3MjE5MDk2LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MTQzIiwiYXVkIjoiaHR0cHM6Ly9jb2RlcGVuLmlvLyJ9.F3Ovzg2WlL8_wB5eKcI5E_OS0qILYPIJuqjLkW1dCbs'
+  }
+};
+
+        fetch('https://localhost:7143/api/Users', options)
+ .then(response => response.json())
+  .then(data => console.log(data))
+	.catch(err => console.error(err));
+
+        */
 
         // GET: https://localhost:7143/api/Users
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
+            _logger.LogTrace($"{nameof(UsersController)} - {nameof(GetUsers)} - Traza de prueba");
+
             return await _context.Users.ToListAsync();
         }
 

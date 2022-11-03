@@ -18,14 +18,16 @@ namespace UniversityApiBackend.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly UniversityDBContext _context;
-       
+        private readonly ILogger<StudentsController> _logger;
+
         //Service
         private readonly IStudentsService studentsService;
 
-        public StudentsController(UniversityDBContext context, IStudentsService studentsService)
+        public StudentsController(UniversityDBContext context, IStudentsService studentsService, ILogger<StudentsController> logger)
         {
             _context = context;
             this.studentsService = studentsService;
+            _logger = logger;
         }
 
         // GET: api/Students

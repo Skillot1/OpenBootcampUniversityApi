@@ -19,11 +19,13 @@ namespace UniversityApiBackend.Controllers
     {
         private readonly UniversityDBContext _context;
         private readonly ICoursesService coursesService;
+        private readonly ILogger<CoursesController> _logger;
 
-        public CoursesController(UniversityDBContext context, ICoursesService coursesService)
+        public CoursesController(UniversityDBContext context, ICoursesService coursesService, ILogger<CoursesController> logger)
         {
             _context = context;
             this.coursesService = coursesService;
+            _logger = logger;
 
         }
 

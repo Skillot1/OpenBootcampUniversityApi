@@ -42,8 +42,7 @@ namespace UniversityApiBackend
                     ValidAudience = bindJwtSettings.ValidAudience,
                     RequireExpirationTime = bindJwtSettings.RequiredExpirationTime,
                     ValidateLifetime = bindJwtSettings.ValidateLifeTime,
-                    ClockSkew = TimeSpan.FromMinutes(15)
-
+                    ClockSkew = TimeSpan.FromMinutes(10)
                 };
 
             });

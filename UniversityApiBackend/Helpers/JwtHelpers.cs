@@ -17,18 +17,15 @@ namespace UniversityApiBackend.Helpers
                 new Claim(ClaimTypes.Name, userAccounts.UserName),
                 new Claim(ClaimTypes.Email, userAccounts.EmailId),
                 new Claim(ClaimTypes.NameIdentifier, Id.ToString()),
-                new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddMinutes(15).ToString("MMM ddd dd yyyy HH:mm:ss tt"))
-            };
+                //Expiracion del token
+                new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddMinutes(10).ToString("MMM ddd dd yyyy HH:mm:ss tt")),
+                //Autenticacion por roles
+                new Claim(ClaimTypes.Role, userAccounts.Rol.ToString())
+        };
 
-            if(userAccounts.UserName == "Admin")
-            {
-             claims.Add(new Claim(ClaimTypes.Role, "Administrator")); 
-            }
-            else if(userAccounts.UserName == "User 1" )
-            {
-                claims.Add(new Claim(ClaimTypes.Role, "User"));
-                claims.Add(new Claim("UserOnly", "User1"));
-            }
+           
+            
+       
 
             return claims;
 
@@ -58,13 +55,14 @@ namespace UniversityApiBackend.Helpers
 
                 Guid id;
 
-                //Tiempo de expiracion del token en 15 minutos
+                //Tiempo de expiracion del token en 10 minutos
 
-                DateTime expireTime = DateTime.UtcNow.AddMinutes(115);
+                DateTime expireTime = DateTime.Now.AddMinutes(10);
 
                 //Validez del token
 
                 userToken.Validity = expireTime.TimeOfDay;
+                userToken.ExpiredTime = expireTime;
 
                 //Generacion del JWT
 
@@ -73,7 +71,7 @@ namespace UniversityApiBackend.Helpers
                     audience: jwtSettings.ValidAudience,
                     claims: GetClaims(model, out id),
                     notBefore: new DateTimeOffset(DateTime.Now).DateTime,
-                    expires: new DateTimeOffset(expireTime).DateTime,
+                    expires: expireTime,
                     signingCredentials: new SigningCredentials(
                         new SymmetricSecurityKey(key),
                         SecurityAlgorithms.HmacSha256
@@ -84,6 +82,7 @@ namespace UniversityApiBackend.Helpers
                 userToken.Id= model.Id;
                 userToken.UserName = model.UserName;
                 userToken.GuidId = id;
+                userToken.Rol = model.Rol;
                 return userToken;
 
             }catch (Exception ex)

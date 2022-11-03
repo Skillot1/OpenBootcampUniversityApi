@@ -8,7 +8,24 @@ using UniversityApiBackend.Services.ChapterService;
 using UniversityApiBackend.Services.CoursesService;
 using UniversityApiBackend.Services.StudentServices;
 
+//10. Use Serilog to log events
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//11.Config Serilog
+
+builder.Host.UseSerilog((HostBuilderContext, LoggerConfiguration) =>
+{
+    LoggerConfiguration
+    .WriteTo.Console()
+    .WriteTo.Debug().
+    ReadFrom.Configuration(HostBuilderContext.Configuration);
+});
+
+//1.1 Add Localization Service and his route
+
+builder.Services.AddLocalization(options => options.ResourcesPath = ("Resources/Location"));
 
 // 2. Connection with SQL Server
 const string ConexionName = "UniversityDB";
@@ -91,12 +108,25 @@ builder.Services.AddCors
 
 var app = builder.Build();
 
+//Location -> Supported Cultures
+
+var supportedCultures = new[] { "en-US", "es-ES", "fr-FR" };
+
+var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture("en-US").AddSupportedCultures(supportedCultures).AddSupportedUICultures(supportedCultures); //English by default
+
+//Location -> Add Localization to App
+
+app.UseRequestLocalization(localizationOptions);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//12. Tell app to use Serilog
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

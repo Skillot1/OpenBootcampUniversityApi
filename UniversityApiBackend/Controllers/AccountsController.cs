@@ -16,11 +16,14 @@ namespace UniversityApiBackend.Controllers
     {
         private readonly JwtSettings jwtSettings;
         private readonly UniversityDBContext context;
+        private readonly ILogger<AccountsController> _logger;
 
-        public AccountsController(JwtSettings jwtSettings, UniversityDBContext context)
+
+        public AccountsController(JwtSettings jwtSettings, UniversityDBContext context, ILogger<AccountsController> _logger)
         {
             this.jwtSettings = jwtSettings;
             this.context = context;
+            this._logger = _logger;
         }
 
    
@@ -32,7 +35,7 @@ namespace UniversityApiBackend.Controllers
             {
 
                 //Comprobamos validez del login
-                bool valid = context.Users.Any(user => user.Name == userLogin.UserName && userLogin.Password == userLogin.Password);
+                bool valid = context.Users.Any(user => user.Name == userLogin.UserName && user.Password == userLogin.Password);
 
                 if (!valid)
                 {
@@ -49,8 +52,8 @@ namespace UniversityApiBackend.Controllers
                           EmailId = user.Email,
                           UserName = user.Name,
                           Id = user.Id,
-                          GuidId = Guid.NewGuid()
-
+                          GuidId = Guid.NewGuid(),
+                          Rol = user.Rol
                       }, jwtSettings);
 
                 //Devolvemos 200 y token
@@ -63,6 +66,27 @@ namespace UniversityApiBackend.Controllers
             }
 
         }
+
+        /*EJEMPLO DE LLAMADA PARA CONSUMIR EN JS
+        const data ={
+  "userName": "Admin",
+  "password": "Admin"
+      }
+
+const options = {
+    method: 'POST',
+  headers: {
+      'Content-Type': 'application/json'
+  },
+  body:JSON.stringify(data)
+};
+
+        fetch('https://localhost:7143/api/Accounts/GetToken', options)
+ .then(response => response.json())
+  .then(data => console.log(data))
+	.catch(err => console.error(err));
+        */
+
 
         //Ejemplo de autenticacion para que solo pueda ver los logins el administrador
 

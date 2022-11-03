@@ -1,4 +1,6 @@
-﻿namespace UniversityApiBackend.Models.JWTModels
+﻿using UniversityApiBackend.Models.DataModels;
+
+namespace UniversityApiBackend.Models.JWTModels
 {
     public class UserTokens
     {
@@ -10,5 +12,7 @@
         public string EmailId { get; set; }
         public Guid GuidId { get; set; }
         public DateTime ExpiredTime { get; set; }
+
+        public Rol Rol { get; set; }
     }
 }

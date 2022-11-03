@@ -19,11 +19,16 @@ namespace UniversityApiBackend.Controllers
     {
         private readonly UniversityDBContext _context;
         private readonly IChaptersService chapterService;
-        public ChaptersController(UniversityDBContext context, IChaptersService chapterService)
+        private readonly ILogger<ChaptersController> _logger;
+
+        public ChaptersController(UniversityDBContext context, IChaptersService chapterService, ILogger<ChaptersController> logger)
         {
             _context = context;
             this.chapterService = chapterService;
+            _logger = logger;
+
         }
+
 
         // GET: api/Chapters
         [HttpGet]
